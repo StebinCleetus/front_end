@@ -23,7 +23,6 @@ const EmployeeView = () => {
           console.log(err);
         }
       )
-
   }
 
 
@@ -39,12 +38,10 @@ const EmployeeView = () => {
             <th scope="col">Mode of Work</th>
             <th scope="col">Start</th>
             <th scope="col">End</th>
-
           </tr>
         </thead>
         <tbody>
           {progressList.map((value, index) => {
-
             return <tr>
               <td>{value.empmail}</td>
               <td>{value.tproject}</td>
@@ -53,13 +50,8 @@ const EmployeeView = () => {
               <td>{value.tmeth}</td>
               <td>{value.tstart}</td>
               <td>{value.tend}</td>
-
-
-
             </tr>
           })}
-
-
         </tbody>
       </table>
     </div >

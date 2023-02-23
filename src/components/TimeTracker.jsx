@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import moment from "moment";
 
 //.................................................Api Input(Form_Data)....................................................
 const TimeTracker = () => {
@@ -24,16 +25,58 @@ const TimeTracker = () => {
         )
 
     }
+    //..........................................Timer Variable......................................................
+    const [isRunning, setIsRunning] = useState(false);
+    const [startTime, setStartTime] = useState(null);
+    const [elapsedTime, setElapsedTime] = useState(moment.duration(0));
     //..........................................project & task fetch from DB.........................................
     var [projectList, setprojectList] = useState([]);
     var [taskList, settaskList] = useState([]);
     useEffect(
         () => {
+            //timer data
+            let interval;
+
+            if (isRunning) {
+                interval = setInterval(() => {
+                    setElapsedTime(moment.duration(moment().diff(startTime)));
+                }, 1000);
+            }
+            //...................
             getDataProject();
             getDataTask();
             getEmployeeProgress();
-        }, []
-    )
+
+            return () => clearInterval(interval);
+        }, [isRunning, startTime]);
+
+    //........................timer functions Start......................................................
+    const handleStart = () => {
+        setIsRunning(true);
+        setStartTime(moment());
+        startfn();
+    };
+
+    const handlePause = () => {
+        setIsRunning(false);
+    };
+
+    const handleResume = () => {
+        setIsRunning(true);
+        setStartTime(moment().subtract(elapsedTime));
+    };
+
+    const handleStop = () => {
+        setIsRunning(false);
+        setStartTime(null);
+        setElapsedTime(moment.duration(0));
+        stopfn();
+    };
+
+
+    //........................timer function ends...........................................................
+
+
 
     const getDataProject = () => {
         axios.get("http://localhost:3001/project")
@@ -142,7 +185,7 @@ const TimeTracker = () => {
     }
     var [progressList, setprogressList] = useState([]);
     //temp data
-    
+
 
 
 
@@ -153,13 +196,14 @@ const TimeTracker = () => {
     return (
         <div>
             <h1 class="display-6 text-center p-5">Master your time with our website. Welcome {sessionStorage.getItem("userName")}..!</h1>
-            
+
             <div className="container">
                 <div className="row pt-3 ">
-                
+
+
                     <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 g-3">
                         <div className="row bg-info bg-opacity-10 border border-info  rounded-end mb-5 ">
-                        <h4 class="m-2">Add your works</h4>
+                            <h4 class="m-2">Add your works</h4>
                             <div className="col col-12 col-sm-12 col-md-4 col-lg-2 col-xl-2 col-xxl-2 p-4">
                                 <select name="tproject" onChange={inputHandeler} class="form-select" aria-label="Default select example">
                                     {projectList.map((value, index) => {
@@ -196,9 +240,27 @@ const TimeTracker = () => {
                             </div>
                             <div className="col col-12 col-sm-12 col-md-4 col-lg-2 col-xl-2 col-xxl-2 ">
                                 <div class="btn-group " role="group" aria-label="Basic mixed styles example">
-                                    <button type="button" class="btn btn-danger" onClick={startfn}>Start</button>
+
+                                    <h4 className='ms-3 pt-4'>{elapsedTime.hours()}:{elapsedTime.minutes()}:{elapsedTime.seconds()}</h4>
+                                    <div class="btn-group ps-3 " role="group" aria-label="Basic mixed styles example">
+                                        {!isRunning && (
+                                            <button type="button" class="btn btn-danger" onClick={handleStart}>Start</button>
+                                        )}
+                                        {isRunning && (
+                                            <button type="button" class="btn btn-danger" onClick={handlePause}>Pause</button>
+                                        )}
+                                        {!isRunning && startTime && (
+                                            <button type="button" class="btn btn-danger" onClick={handleResume}>Resume</button>
+                                        )}
+                                        {startTime && (
+                                            <button type="button" class="btn btn-danger" onClick={handleStop}>Stop</button>
+                                        )}
+                                    </div>
+
+                                    {/* <button type="button" class="btn btn-danger" onClick={startfn}>Start</button> */}
                                     {/* <button type="button" class="btn btn-warning">Pause</button> */}
-                                    <button type="button" class="btn btn-success" onClick={stopfn}>stop</button>
+                                    {/* <button type="button" class="btn btn-success" onClick={stopfn}>stop</button> */}
+
                                 </div>
 
                             </div>

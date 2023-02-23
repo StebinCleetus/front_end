@@ -19,7 +19,6 @@ const EmployeeAdd = () => {
         )
     }
     const check = () => {
-// console.log(data);
         axios.post("http://localhost:3001/addemployee", data)
             .then(
                 (response) => {
@@ -76,7 +75,6 @@ const EmployeeAdd = () => {
                 </div>
             </form>
             <button type="button" class="btn btn-outline-success" onClick={check}>Add</button>
-            
         </div>
     )
 }

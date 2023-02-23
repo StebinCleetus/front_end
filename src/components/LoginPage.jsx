@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import "./Loginpage.css"
 import NavbarLand from './NavbarLand'
 import { useNavigate } from "react-router-dom";
-import Footer from './Footer';
+
 
 
 
@@ -19,7 +19,7 @@ const LoginPage = () => {
             .then(
                 (response) => {
                     console.log(response.data.status)
-                    if (response.data.status == "Sucess") {
+                    if (response.data.status === "Sucess") {
                         let token = response.data.token;
                         let email = response.data.data[0].email;
                         let id = response.data.data[0]._id;
@@ -31,7 +31,7 @@ const LoginPage = () => {
                         sessionStorage.setItem("userName", userName);
                        
 
-                        if (response.data.data[0].role == "admin") {
+                        if (response.data.data[0].role === "admin") {
 
                             navigate("/admin");
 
@@ -116,7 +116,7 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
-<Footer/>
+
         </div>
 
     )
